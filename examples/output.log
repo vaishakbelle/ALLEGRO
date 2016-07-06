@@ -1,0 +1,74 @@
+# output for bat0 (cf. README)
+
+> (test1)
+Execute action: (sonar)
+8
+Execute action: (nfwd 3.004093341143795)
+Execute action: (sonar)
+5
+
+> (test2)
+'(let loop ()
+   (while
+    (< (conf h 1) 0.6)
+    (begin
+      (send-action (list 'sonar))
+      (let ((sense119 (receive-sensor (list 'sonar))))
+        (for
+         ((i120 *num-worlds*))
+         (world-set! i120 like41 (* like41 (GAUSSIAN sense119 h 1)))))))
+   (let ((diff (- (expected-val h) 5)))
+     (when (> (abs diff) 0.02)
+       (begin
+         (send-action (list 'nfwd diff))
+         (for
+          ((i121 *num-worlds*))
+          (world-set! i121 h (max 0 (- h (GAUSSIAN-RAND diff 4))))))
+       (loop))))
+
+
+> (test3)
+Execute action: (nfwd 5)
+Execute action: (sonar)
+10
+not yetExecute action: (nfwd 5)
+Execute action: (sonar)
+10
+not yetExecute action: (nfwd 5)
+Execute action: (sonar)
+13
+not yetExecute action: (nfwd 5)
+Execute action: (sonar)
+14
+not yetExecute action: (nfwd 5)
+Execute action: (sonar)
+20
+not yet
+
+# tcp 
+
+; on first terminal 
+racket -if examples/prog0.scm 
+
+> (test4)
+Connecting to action server on TCP port 8123
+Disconnecting from action server
+
+; on second terminal 
+
+racket -fm action-server.scm 
+
+Waiting for localhost TCP connection on port 8123
+Client has connected
+Action received: (sonar)
+Returning sensor value of 6.9243195296997815
+Action received: (sonar)
+Returning sensor value of 6.941606856002471
+Action received: (nfwd 1.939588384369502)
+New value of h is 4.995763799309966
+Action received: (sonar)
+Returning sensor value of 4.9711099203570654
+Action received: (sonar)
+Returning sensor value of 5.082862270378642
+Client has disconnected
+
